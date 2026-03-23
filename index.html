@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Harshu ❤️</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+    color: white;
+}
+
+/* video background */
+video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+}
+
+/* lock screen */
+#lockScreen {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+input {
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+}
+
+/* slides */
+.slide {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transform: scale(1.1);
+    transition: 0.7s;
+}
+.active {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* card */
+.card {
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(15px);
+    padding: 25px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 90%;
+}
+
+/* typing name */
+#typedName {
+    font-size: 2rem;
+}
+
+/* image */
+.img-slide img {
+    width: 90%;
+    border-radius: 20px;
+}
+.overlay {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+/* controls */
+.controls {
+    position: fixed;
+    bottom: 20px;
+    width: 100%;
+    text-align: center;
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    background: #ff4d6d;
+    color: white;
+}
+
+/* hearts */
+.heart {
+    position: fixed;
+    bottom: -10px;
+    animation: float 6s linear infinite;
+}
+@keyframes float {
+    to { transform: translateY(-100vh); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- video -->
+<video autoplay muted loop>
+    <source src="bg.mp4" type="video/mp4">
+</video>
+
+<!-- lock -->
+<div id="lockScreen">
+    <h2>Enter Password ❤️</h2>
+    <input type="password" id="pass">
+    <button onclick="unlock()">Enter</button>
+</div>
+
+<audio id="music" src="music.mp3"></audio>
+<audio id="typingSound" src="typing.mp3"></audio>
+<audio id="beatSound" src="beat.mp3" loop></audio>
+
+<!-- main -->
+<div id="main" style="display:none;">
+
+<div class="slide active">
+    <div class="card">
+        <h1 id="typedName"></h1>
+        <p>🎂 Happy 18th Birthday 🎂</p>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="card">
+        <p>Happy Birthday Mera Bachha 💖</p>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="card">
+        <p>Jab mai phli bar tmse mila tha tbse leke aajtk tm meri khusi ka jariya ban gyi ho 💕</p>
+    </div>
+</div>
+
+<div class="slide">
+    <div class="card">
+        <p>Maine tmhare sath jo school time bitaya hai wo golden era tha mera aur mujhe poori zidgi tmhare sath bitani hai ❤️</p>
+    </div>
+</div>
+
+<div class="slide img-slide">
+    <img src="last.jpg">
+    <div class="overlay">Hona hai tujhme Faana ❤️</div>
+</div>
+
+<div class="slide">
+    <div class="card">
+        <h1>❤️ I LOVE YOU ❤️</h1>
+    </div>
+</div>
+
+<div class="controls">
+    <button onclick="prev()">⬅</button>
+    <button onclick="next()">➡</button>
+</div>
+
+</div>
+
+<script>
+function unlock(){
+    if(document.getElementById("pass").value === "2403"){
+        document.getElementById("lockScreen").style.display="none";
+        document.getElementById("main").style.display="block";
+        startTyping();
+    }
+}
+
+let i=0;
+const slides=document.querySelectorAll(".slide");
+
+function show(n){
+    slides.forEach(s=>s.classList.remove("active"));
+    slides[n].classList.add("active");
+
+    if(n === slides.length-1){
+        startFireworks();
+    }
+}
+
+function next(){ i=(i+1)%slides.length; show(i);}
+function prev(){ i=(i-1+slides.length)%slides.length; show(i);}
+
+// music + autoplay
+document.body.addEventListener("click", ()=>{
+    document.getElementById("music").play();
+    document.getElementById("beatSound").play();
+    setInterval(next,4000);
+}, {once:true});
+
+// swipe
+let startX=0;
+document.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+document.addEventListener("touchend",e=>{
+    let endX=e.changedTouches[0].clientX;
+    if(startX-endX>50) next();
+    if(endX-startX>50) prev();
+});
+
+// typing
+function startTyping(){
+    let name="Harshu ❤️";
+    let i=0;
+    let el=document.getElementById("typedName");
+    let sound=document.getElementById("typingSound");
+
+    function type(){
+        if(i<name.length){
+            el.innerHTML+=name.charAt(i);
+            sound.currentTime=0;
+            sound.play();
+            i++;
+            setTimeout(type,150);
+        } else {
+            heartbeat();
+        }
+    }
+    type();
+}
+
+// heartbeat
+function heartbeat(){
+    let el=document.getElementById("typedName");
+    setInterval(()=>{
+        el.style.transform="scale(1.1)";
+        setTimeout(()=>el.style.transform="scale(1)",200);
+    },800);
+}
+
+// hearts
+setInterval(()=>{
+    let h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="❤️";
+    h.style.left=Math.random()*100+"vw";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+},500);
+
+// fireworks
+function startFireworks(){
+    for(let i=0;i<30;i++){
+        let f=document.createElement("div");
+        f.style.position="fixed";
+        f.style.left="50%";
+        f.style.top="50%";
+        f.style.width="5px";
+        f.style.height="5px";
+        f.style.background="white";
+        document.body.appendChild(f);
+
+        let x=(Math.random()-0.5)*300;
+        let y=(Math.random()-0.5)*300;
+
+        f.animate([
+            {transform:"translate(0,0)",opacity:1},
+            {transform:`translate(${x}px,${y}px)`,opacity:0}
+        ],{duration:1000});
+
+        setTimeout(()=>f.remove(),1000);
+    }
+}
+</script>
+
+</body>
+</html>
